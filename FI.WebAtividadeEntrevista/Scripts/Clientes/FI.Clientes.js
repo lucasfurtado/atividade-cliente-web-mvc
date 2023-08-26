@@ -1,5 +1,8 @@
 ﻿
 $(document).ready(function () {
+
+    $('#Cpf').inputmask("999.999.999-99");
+
     $('#formCadastro').submit(function (e) {
         e.preventDefault();
         $.ajax({
