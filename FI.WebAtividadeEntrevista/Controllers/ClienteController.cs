@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
+using System.Text.RegularExpressions;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -26,7 +27,7 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
-            
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -38,38 +39,20 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
-                /*
-                ///verificar cpf
-                if (bo.VerificarValidadeCPF(model.Cpf))
+                model.Id = bo.Incluir(new Cliente()
                 {
-                    ///verificar existencia de cpf
-                    if (bo.VerificarExistencia(model.Cpf))
-                    {
-                        model.Id = bo.Incluir(new Cliente()
-                        {                    
-                            CEP = model.CEP,
-                            Cidade = model.Cidade,
-                            Email = model.Email,
-                            Estado = model.Estado,
-                            Logradouro = model.Logradouro,
-                            Nacionalidade = model.Nacionalidade,
-                            Nome = model.Nome,
-                            Sobrenome = model.Sobrenome,
-                            Telefone = model.Telefone,
-                            Cpf = model.Cpf
-                        });
-                    }
-                    else
-                    {
+                    CEP = model.CEP,
+                    Cidade = model.Cidade,
+                    Email = model.Email,
+                    Estado = model.Estado,
+                    Logradouro = model.Logradouro,
+                    Nacionalidade = model.Nacionalidade,
+                    Nome = model.Nome,
+                    Sobrenome = model.Sobrenome,
+                    Telefone = model.Telefone,
+                    Cpf = Regex.Replace(model.Cpf, "[^0-9]", "")
+                });
 
-                    }
-                }
-                else
-                {
-
-                }
-                */
-           
                 return Json("Cadastro efetuado com sucesso");
             }
         }
@@ -78,7 +61,7 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Alterar(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
-       
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -103,7 +86,7 @@ namespace WebAtividadeEntrevista.Controllers
                     Sobrenome = model.Sobrenome,
                     Telefone = model.Telefone
                 });
-                               
+
                 return Json("Cadastro alterado com sucesso");
             }
         }
@@ -131,7 +114,7 @@ namespace WebAtividadeEntrevista.Controllers
                     Telefone = cliente.Telefone
                 };
 
-            
+
             }
 
             return View(model);

@@ -73,6 +73,7 @@ namespace WebAtividadeEntrevista.Models
         /// </summary>
         [Required]
         [ValidarCpf]
+        [CpfUnico]
         public string Cpf { get; set; }
 
     }    
