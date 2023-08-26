@@ -38,20 +38,37 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
-                
-                model.Id = bo.Incluir(new Cliente()
-                {                    
-                    CEP = model.CEP,
-                    Cidade = model.Cidade,
-                    Email = model.Email,
-                    Estado = model.Estado,
-                    Logradouro = model.Logradouro,
-                    Nacionalidade = model.Nacionalidade,
-                    Nome = model.Nome,
-                    Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone
-                });
+                /*
+                ///verificar cpf
+                if (bo.VerificarValidadeCPF(model.Cpf))
+                {
+                    ///verificar existencia de cpf
+                    if (bo.VerificarExistencia(model.Cpf))
+                    {
+                        model.Id = bo.Incluir(new Cliente()
+                        {                    
+                            CEP = model.CEP,
+                            Cidade = model.Cidade,
+                            Email = model.Email,
+                            Estado = model.Estado,
+                            Logradouro = model.Logradouro,
+                            Nacionalidade = model.Nacionalidade,
+                            Nome = model.Nome,
+                            Sobrenome = model.Sobrenome,
+                            Telefone = model.Telefone,
+                            Cpf = model.Cpf
+                        });
+                    }
+                    else
+                    {
 
+                    }
+                }
+                else
+                {
+
+                }
+                */
            
                 return Json("Cadastro efetuado com sucesso");
             }

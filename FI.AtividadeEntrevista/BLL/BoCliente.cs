@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FI.AtividadeEntrevista.BLL
 {
@@ -65,7 +62,7 @@ namespace FI.AtividadeEntrevista.BLL
         public List<DML.Cliente> Pesquisa(int iniciarEm, int quantidade, string campoOrdenacao, bool crescente, out int qtd)
         {
             DAL.DaoCliente cli = new DAL.DaoCliente();
-            return cli.Pesquisa(iniciarEm,  quantidade, campoOrdenacao, crescente, out qtd);
+            return cli.Pesquisa(iniciarEm, quantidade, campoOrdenacao, crescente, out qtd);
         }
 
         /// <summary>
@@ -77,6 +74,109 @@ namespace FI.AtividadeEntrevista.BLL
         {
             DAL.DaoCliente cli = new DAL.DaoCliente();
             return cli.VerificarExistencia(CPF);
+        }
+
+        public bool VerificarValidadeCPF(string CPF)
+        {
+            if (CPF == null)
+            {
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(CPF))
+                return false;
+
+            //Removendo a máscara por padrão (porém no caso já está vindo para cá sem máscara)
+            CPF = CPF.Trim().Replace(".", "").Replace("-", "");
+
+            bool? algarismosIguais = VerificaCpfsInvalidos(CPF);
+
+            if (algarismosIguais == true)
+                return false;
+            else
+            if (algarismosIguais == null)
+                return false;
+
+            if (CPF.Length != 11)
+                return false;
+
+            if (!long.TryParse(CPF, out var cpfNumerico))
+                return false;
+
+
+            //Cálculo padrão de verificação do dígito verificador de CPF
+            int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            string tempCpf;
+            string digito;
+            int soma;
+            int resto;
+
+            tempCpf = CPF.Substring(0, 9);
+            soma = 0;
+
+            // Calcula o primeiro dígito verificador
+            for (int i = 0; i < 9; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
+            resto = soma % 11;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito = resto.ToString();
+            tempCpf = tempCpf + digito;
+            soma = 0;
+
+            // Calcula o segundo dígito verificador
+            for (int i = 0; i < 10; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
+            resto = soma % 11;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito = digito + resto.ToString();
+
+            //Verifica a validade do CPF
+            if (CPF.EndsWith(digito))
+                return true;
+            else
+                return false;
+        }
+
+        private bool? VerificaCpfsInvalidos(string cpf)
+        {
+            try
+            {
+                switch (cpf)
+                {
+                    case "11111111111":
+                        return true;
+                    case "00000000000":
+                        return true;
+                    case "2222222222":
+                        return true;
+                    case "33333333333":
+                        return true;
+                    case "44444444444":
+                        return true;
+                    case "55555555555":
+                        return true;
+                    case "66666666666":
+                        return true;
+                    case "77777777777":
+                        return true;
+                    case "88888888888":
+                        return true;
+                    case "99999999999":
+                        return true;
+                }
+                return false;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using WebAtividadeEntrevista.CustomDataAnnotation;
 
 namespace WebAtividadeEntrevista.Models
 {
@@ -66,6 +67,13 @@ namespace WebAtividadeEntrevista.Models
         /// Telefone
         /// </summary>
         public string Telefone { get; set; }
+
+        /// <summary>
+        /// Cadastro de Pessoa Física
+        /// </summary>
+        [Required]
+        [ValidarCpf]
+        public string Cpf { get; set; }
 
     }    
 }
