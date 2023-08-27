@@ -68,6 +68,7 @@ namespace WebAtividadeEntrevista.Controllers
                     {
                         beneficarios.Add(new BeneficiarioModel
                         {
+                            Id = model.Id,
                             Cpf = cpf,
                             Nome = model.Nome,
                             IdCliente = model.IdCliente

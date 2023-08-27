@@ -42,6 +42,7 @@ namespace FI.AtividadeEntrevista.DAL.Clientes
                 foreach (DataRow row in ds.Tables[0].Rows)
                 {
                     DML.Beneficiario beneficiario = new DML.Beneficiario();
+                    beneficiario.Id = row.Field<long>("Id");
                     beneficiario.Nome = row.Field<string>("Nome");
                     beneficiario.Cpf = row.Field<string>("Cpf");
                     beneficiario.IdCliente = row.Field<long>("IdCliente");
