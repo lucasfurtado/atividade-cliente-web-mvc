@@ -16,6 +16,7 @@ $(document).ready(function () {
         $('#formCadastro #Telefone').val(obj.Telefone);
         $('#formCadastro #Cpf').val(obj.Cpf);
         $('#formCadastro #Id').val(obj.Id);
+        $('#formCadastro #Beneficiarios').val(obj.Beneficiarios);
     }
 
     $('#formCadastro').submit(function (e) {

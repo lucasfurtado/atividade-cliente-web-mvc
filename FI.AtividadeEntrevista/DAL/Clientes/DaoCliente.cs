@@ -166,5 +166,20 @@ namespace FI.AtividadeEntrevista.DAL
 
             return lista;
         }
+
+        public bool VerificaSeCpfEDoUsuario(long id, string cpf)
+        {
+            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+
+            parametros.Add(new System.Data.SqlClient.SqlParameter("clienteId", id));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("clienteCpf", Regex.Replace(cpf, "[^0-9]", "")));
+
+            DataSet ds = base.Consultar("FI_SP_PesqClienteComIdECpf", parametros);
+
+            if (ds.Tables[0].Rows.Count > 0)
+                return true;
+            else
+                return false;
+        }
     }
 }

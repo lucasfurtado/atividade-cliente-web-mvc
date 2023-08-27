@@ -76,5 +76,7 @@ namespace WebAtividadeEntrevista.Models
         [CpfUnico]
         public string Cpf { get; set; }
 
-    }    
+        //public List<BeneficiarioModel> Beneficiarios { get; set; }
+        public string Beneficiarios { get; set; }
+    }
 }

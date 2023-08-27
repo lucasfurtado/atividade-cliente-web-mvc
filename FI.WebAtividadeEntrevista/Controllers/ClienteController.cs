@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -73,6 +74,11 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
+                List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+
+                BoBeneficiario boBeneficiario = new BoBeneficiario();
+                
+
                 bo.Alterar(new Cliente()
                 {
                     Id = model.Id,
@@ -95,7 +101,23 @@ namespace WebAtividadeEntrevista.Controllers
         public ActionResult Alterar(long id)
         {
             BoCliente bo = new BoCliente();
+
             Cliente cliente = bo.Consultar(id);
+
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+            List<BeneficiarioModel> beneficiariosModel = new List<BeneficiarioModel>();
+            List<Beneficiario> beneficiarios = boBeneficiario.BuscaBeneficiariosDoCliente(cliente.Id);
+            foreach (var beneficiario in beneficiarios)
+            {
+                beneficiariosModel.Add(new BeneficiarioModel
+                {
+                    Id = beneficiario.Id,
+                    Cpf = beneficiario.Cpf,
+                    Nome = beneficiario.Nome,
+                    IdCliente = beneficiario.IdCliente
+                });
+            }
+
             Models.ClienteModel model = null;
 
             if (cliente != null)
@@ -111,11 +133,13 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = cliente.Nacionalidade,
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
-                    Telefone = cliente.Telefone
+                    Telefone = cliente.Telefone,
+                    Cpf = cliente.Cpf,
+                    Beneficiarios = JsonConvert.SerializeObject(beneficiariosModel)
                 };
-
-
             }
+
+            Session["beneficiarios"] = beneficiariosModel;
 
             return View(model);
         }

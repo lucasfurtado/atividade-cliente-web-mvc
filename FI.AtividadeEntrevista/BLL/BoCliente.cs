@@ -140,6 +140,12 @@ namespace FI.AtividadeEntrevista.BLL
                 return false;
         }
 
+        public bool VerificaSeCpfEDoUsuario(long id, string cpf)
+        {
+            DAL.DaoCliente cli = new DAL.DaoCliente();
+            return cli.VerificaSeCpfEDoUsuario(id, cpf);
+        }
+
         /// <summary>
         /// Verifica cpf inválido na lista de CPF
         /// </summary>
