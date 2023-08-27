@@ -44,6 +44,9 @@ namespace WebAtividadeEntrevista
                       "~/Scripts/InputMask/inputMask.min.js",
                       "~/Scripts/InputMask/jquery.inputMask.js"));
 
+            bundles.Add(new ScriptBundle("~/bundles/incluirBeneficiario").Include(
+                      "~/Scripts/Beneficiarios/FI.IncluirBeneficiario.js"));
+
         }
     }
 }

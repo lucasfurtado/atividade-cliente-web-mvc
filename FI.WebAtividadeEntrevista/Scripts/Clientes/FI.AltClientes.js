@@ -1,5 +1,9 @@
 ﻿
 $(document).ready(function () {
+
+    $('#Cpf').inputmask("999.999.999-99");
+    $('#CPFBeneficiario').inputmask("999.999.999-99");
+
     if (obj) {
         $('#formCadastro #Nome').val(obj.Nome);
         $('#formCadastro #CEP').val(obj.CEP);
@@ -11,6 +15,7 @@ $(document).ready(function () {
         $('#formCadastro #Logradouro').val(obj.Logradouro);
         $('#formCadastro #Telefone').val(obj.Telefone);
         $('#formCadastro #Cpf').val(obj.Cpf);
+        $('#formCadastro #Id').val(obj.Id);
     }
 
     $('#formCadastro').submit(function (e) {
