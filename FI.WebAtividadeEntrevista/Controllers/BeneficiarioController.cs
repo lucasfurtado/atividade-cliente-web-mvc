@@ -43,9 +43,9 @@ namespace WebAtividadeEntrevista.Controllers
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
             }
-            else
-            {
-                if(bo.ExisteCPFCadastradoParfaOCliente(model.IdCliente, cpf))
+            else { 
+            
+                if(model.IdCliente != null && bo.ExisteCPFCadastradoParfaOCliente(int.Parse(model.IdCliente), cpf))
                 {
                     Response.StatusCode = 400;
                     return Json(string.Join(Environment.NewLine, "CPF ja cadastrado"));
@@ -74,13 +74,6 @@ namespace WebAtividadeEntrevista.Controllers
                         });
                         Session["beneficiarios"] = beneficarios;
                     }
-                
-                //bo.Incluir(new Beneficiario
-                //{
-                //    Cpf = Regex.Replace(model.Cpf, "[^0-9]", ""),
-                //    Nome = model.Nome,
-                //    IdCliente = model.IdCliente
-                //});
 
                     return Json("Adicionado");
                 }

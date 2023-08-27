@@ -28,6 +28,7 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
 
             if (!this.ModelState.IsValid)
             {
@@ -40,6 +41,8 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
+                List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+
                 model.Id = bo.Incluir(new Cliente()
                 {
                     CEP = model.CEP,
@@ -53,6 +56,16 @@ namespace WebAtividadeEntrevista.Controllers
                     Telefone = model.Telefone,
                     Cpf = Regex.Replace(model.Cpf, "[^0-9]", "")
                 });
+
+                foreach (var beneficiario in beneficarios)
+                {
+                    boBeneficiario.Incluir(new Beneficiario
+                    {
+                        Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
+                        Nome = beneficiario.Nome,
+                        IdCliente = model.Id
+                    });
+                }
 
                 return Json("Cadastro efetuado com sucesso");
             }
@@ -114,7 +127,7 @@ namespace WebAtividadeEntrevista.Controllers
                     Id = beneficiario.Id,
                     Cpf = beneficiario.Cpf,
                     Nome = beneficiario.Nome,
-                    IdCliente = beneficiario.IdCliente
+                    IdCliente = beneficiario.IdCliente.ToString()
                 });
             }
 
