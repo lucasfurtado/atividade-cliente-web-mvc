@@ -21,6 +21,8 @@ namespace WebAtividadeEntrevista.Controllers
 
         public ActionResult Incluir()
         {
+            Session["beneficiarios"] = null ;
+
             return View();
         }
 
