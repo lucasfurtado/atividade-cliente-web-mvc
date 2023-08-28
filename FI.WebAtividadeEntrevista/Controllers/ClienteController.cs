@@ -6,6 +6,8 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FI.AtividadeEntrevista.DML;
+using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 
 namespace WebAtividadeEntrevista.Controllers
 {
@@ -19,6 +21,9 @@ namespace WebAtividadeEntrevista.Controllers
 
         public ActionResult Incluir()
         {
+            Session["beneficiarios"] = null;
+            Session["beneficiariosExcluir"] = null;
+
             return View();
         }
 
@@ -26,7 +31,8 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Incluir(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
-            
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -38,9 +44,12 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
-                
+                List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+                if (beneficarios == null)
+                    beneficarios = new List<BeneficiarioModel>();
+
                 model.Id = bo.Incluir(new Cliente()
-                {                    
+                {
                     CEP = model.CEP,
                     Cidade = model.Cidade,
                     Email = model.Email,
@@ -49,10 +58,23 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone
+                    Telefone = model.Telefone,
+                    Cpf = Regex.Replace(model.Cpf, "[^0-9]", "")
                 });
 
-           
+                foreach (var beneficiario in beneficarios)
+                {
+                    boBeneficiario.Incluir(new Beneficiario
+                    {
+                        Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
+                        Nome = beneficiario.Nome,
+                        IdCliente = model.Id
+                    });
+                }
+
+                Session["beneficiarios"] = null;
+                Session["beneficiariosExcluir"] = null;
+
                 return Json("Cadastro efetuado com sucesso");
             }
         }
@@ -61,7 +83,7 @@ namespace WebAtividadeEntrevista.Controllers
         public JsonResult Alterar(ClienteModel model)
         {
             BoCliente bo = new BoCliente();
-       
+
             if (!this.ModelState.IsValid)
             {
                 List<string> erros = (from item in ModelState.Values
@@ -73,6 +95,20 @@ namespace WebAtividadeEntrevista.Controllers
             }
             else
             {
+                List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+                List<BeneficiarioModel> beneficariosExcluir = Session["beneficiariosExcluir"] as List<BeneficiarioModel>;
+
+                //foreach (var beneficiario in beneficarios)
+                //{
+                //    if (!bo.VerificarValidadeCPF(beneficiario.Cpf))
+                //    {
+                //        Response.StatusCode = 400;
+                //        return Json(string.Join(Environment.NewLine, $"CPF inválido do beneficiário {beneficiario.Nome}"));
+                //    }
+                //}
+
+                BoBeneficiario boBeneficiario = new BoBeneficiario();
+
                 bo.Alterar(new Cliente()
                 {
                     Id = model.Id,
@@ -84,9 +120,52 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = model.Nacionalidade,
                     Nome = model.Nome,
                     Sobrenome = model.Sobrenome,
-                    Telefone = model.Telefone
+                    Telefone = model.Telefone,
+                    Cpf = Regex.Replace(model.Cpf, "[^0-9]", "")
                 });
-                               
+
+                if(beneficarios != null)
+                {
+                    foreach (var beneficiario in beneficarios)
+                    {
+                        if (beneficiario.Id == null)
+                        {
+                            boBeneficiario.Incluir(new Beneficiario
+                            {
+                                Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
+                                Nome = beneficiario.Nome,
+                                IdCliente = long.Parse(beneficiario.IdCliente)
+                            });
+                        }
+                        else
+                        {
+                            boBeneficiario.Editar(new Beneficiario
+                            {
+                                Id = long.Parse(beneficiario.Id),
+                                Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
+                                Nome = beneficiario.Nome,
+                                IdCliente = long.Parse(beneficiario.IdCliente)
+                            });
+                        }
+                    }
+                }
+                
+                if(beneficariosExcluir != null)
+                {
+                    foreach (var beneficiarioItem in beneficariosExcluir)
+                    {
+                        if (!string.IsNullOrEmpty(beneficiarioItem.Id))
+                        {
+                            boBeneficiario.Excluir(new Beneficiario
+                            {
+                                Id = long.Parse(beneficiarioItem.Id),
+                                Cpf = beneficiarioItem.Cpf,
+                                Nome = beneficiarioItem.Nome
+                            });
+                        }
+                    }
+                }
+
                 return Json("Cadastro alterado com sucesso");
             }
         }
@@ -95,7 +174,23 @@ namespace WebAtividadeEntrevista.Controllers
         public ActionResult Alterar(long id)
         {
             BoCliente bo = new BoCliente();
+
             Cliente cliente = bo.Consultar(id);
+
+            BoBeneficiario boBeneficiario = new BoBeneficiario();
+            List<BeneficiarioModel> beneficiariosModel = new List<BeneficiarioModel>();
+            List<Beneficiario> beneficiarios = boBeneficiario.BuscaBeneficiariosDoCliente(cliente.Id);
+            foreach (var beneficiario in beneficiarios)
+            {
+                beneficiariosModel.Add(new BeneficiarioModel
+                {
+                    Id = beneficiario.Id.ToString(),
+                    Cpf = beneficiario.Cpf,
+                    Nome = beneficiario.Nome,
+                    IdCliente = beneficiario.IdCliente.ToString()
+                });
+            }
+
             Models.ClienteModel model = null;
 
             if (cliente != null)
@@ -111,11 +206,13 @@ namespace WebAtividadeEntrevista.Controllers
                     Nacionalidade = cliente.Nacionalidade,
                     Nome = cliente.Nome,
                     Sobrenome = cliente.Sobrenome,
-                    Telefone = cliente.Telefone
+                    Telefone = cliente.Telefone,
+                    Cpf = cliente.Cpf,
+                    Beneficiarios = JsonConvert.SerializeObject(beneficiariosModel)
                 };
-
-            
             }
+
+            Session["beneficiarios"] = beneficiariosModel;
 
             return View(model);
         }

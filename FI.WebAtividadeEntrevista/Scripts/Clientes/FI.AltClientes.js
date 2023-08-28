@@ -1,5 +1,9 @@
 ﻿
 $(document).ready(function () {
+
+    $('#Cpf').inputmask("999.999.999-99");
+    $('#CPFBeneficiario').inputmask("999.999.999-99");
+
     if (obj) {
         $('#formCadastro #Nome').val(obj.Nome);
         $('#formCadastro #CEP').val(obj.CEP);
@@ -10,6 +14,9 @@ $(document).ready(function () {
         $('#formCadastro #Cidade').val(obj.Cidade);
         $('#formCadastro #Logradouro').val(obj.Logradouro);
         $('#formCadastro #Telefone').val(obj.Telefone);
+        $('#formCadastro #Cpf').val(obj.Cpf);
+        $('#formCadastro #Id').val(obj.Id);
+        $('#formCadastro #Beneficiarios').val(obj.Beneficiarios);
     }
 
     $('#formCadastro').submit(function (e) {
@@ -27,7 +34,8 @@ $(document).ready(function () {
                 "Estado": $(this).find("#Estado").val(),
                 "Cidade": $(this).find("#Cidade").val(),
                 "Logradouro": $(this).find("#Logradouro").val(),
-                "Telefone": $(this).find("#Telefone").val()
+                "Telefone": $(this).find("#Telefone").val(),
+                "Cpf": $(this).find("#Cpf").val()
             },
             error:
             function (r) {

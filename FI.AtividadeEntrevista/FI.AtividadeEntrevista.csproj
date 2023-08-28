@@ -61,9 +61,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BLL\BoBeneficiario.cs" />
     <Compile Include="BLL\BoCliente.cs" />
+    <Compile Include="DAL\Benefiario\DaoBeneficiario.cs" />
     <Compile Include="DAL\Clientes\DaoCliente.cs" />
     <Compile Include="DAL\Padrao\FI.AcessoDados.cs" />
+    <Compile Include="DML\Beneficario.cs" />
     <Compile Include="DML\Cliente.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -74,7 +77,16 @@
     <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_AltCliente.sql" />
     <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_IncCliente.sql" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_AltBenef.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_ExcluirBeneficiarioId.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_IncBeneficiario.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_IncClienteV2.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_PesqClienteComIdECpf.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_PesqListaBeneficiarios.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_VerificaCPFParaCliente.sql" />
+    <Content Include="DAL\Clientes\Procedures\FI_SP_VerificaCliente.sql" />
+  </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
       <Visible>False</Visible>
