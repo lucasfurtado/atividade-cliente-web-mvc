@@ -82,8 +82,8 @@ function popular() {
                                 </div>
                             </div>
                         </div> `;
-
                     $('#listaBeneficiarios').append(novoCampo);
+                    $(`#CPFBeneficiario${i}`).inputmask("999.999.999-99");
                 }
             }
     });
@@ -100,7 +100,7 @@ function editarBeneficiario(index, beneficarioId) {
         let nomeBenef = document.getElementById(`NomeBeneficiario${index}`);
         nomeBenef.disabled = false;
 
-        $(`#BtnAlterarBeneficiario${index}`).html("Salvar");
+        $(`#BtnAlterarBeneficiario${index}`).removeClass("btn btn-primary").addClass("btn btn-primary btn-success").html("Salvar");
     }
     else {
 
@@ -109,7 +109,7 @@ function editarBeneficiario(index, beneficarioId) {
         let nomeBenef = document.getElementById(`NomeBeneficiario${index}`);
         nomeBenef.disabled = true;
 
-        $(`#BtnAlterarBeneficiario${index}`).html("Alterar");
+        $(`#BtnAlterarBeneficiario${index}`).removeClass("btn btn-primary btn-success").addClass("btn btn-primary").html("Alterar");
 
         editaBeneficiario(index,beneficarioId);
     }
@@ -129,6 +129,9 @@ function editaBeneficiario(index,beneficarioId) {
         },
         error:
             function (r) {
+
+
+
                 if (r.status == 400)
                     ModalDialog("Ocorreu um erro", r.responseJSON);
                 else if (r.status == 500)

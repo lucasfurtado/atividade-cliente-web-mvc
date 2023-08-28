@@ -85,18 +85,30 @@ namespace WebAtividadeEntrevista.Controllers
         [HttpPost]
         public JsonResult EditarBeneficiario(BeneficiarioModel beneficiario)
         {
-            List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
-
-            foreach (var beneficiarioItem in beneficarios)
+            if (!this.ModelState.IsValid)
             {
-                if (beneficiarioItem.Id == beneficiario.Id)
-                {
-                    beneficiarioItem.Cpf = beneficiario.Cpf;
-                    beneficiarioItem.Nome = beneficiario.Nome;
-                }
-            }
+                List<string> erros = (from item in ModelState.Values
+                                      from error in item.Errors
+                                      select error.ErrorMessage).ToList();
 
-            return Json("Editado");
+                Response.StatusCode = 400;
+                return Json(string.Join(Environment.NewLine, erros));
+            }
+            else
+            {
+                List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+
+                foreach (var beneficiarioItem in beneficarios)
+                {
+                    if (beneficiarioItem.Id == beneficiario.Id || beneficiarioItem.Cpf == beneficiario.Cpf)
+                    {
+                        beneficiarioItem.Cpf = beneficiario.Cpf;
+                        beneficiarioItem.Nome = beneficiario.Nome;
+                    }
+                }
+
+                return Json("Editado");
+            }
         }
 
         [HttpPost]

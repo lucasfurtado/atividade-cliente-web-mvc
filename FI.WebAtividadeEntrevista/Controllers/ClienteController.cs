@@ -21,7 +21,8 @@ namespace WebAtividadeEntrevista.Controllers
 
         public ActionResult Incluir()
         {
-            Session["beneficiarios"] = null ;
+            Session["beneficiarios"] = null;
+            Session["beneficiariosExcluir"] = null;
 
             return View();
         }
@@ -69,6 +70,9 @@ namespace WebAtividadeEntrevista.Controllers
                     });
                 }
 
+                Session["beneficiarios"] = null;
+                Session["beneficiariosExcluir"] = null;
+
                 return Json("Cadastro efetuado com sucesso");
             }
         }
@@ -92,8 +96,17 @@ namespace WebAtividadeEntrevista.Controllers
                 List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
                 List<BeneficiarioModel> beneficariosExcluir = Session["beneficiariosExcluir"] as List<BeneficiarioModel>;
 
+                //foreach (var beneficiario in beneficarios)
+                //{
+                //    if (!bo.VerificarValidadeCPF(beneficiario.Cpf))
+                //    {
+                //        Response.StatusCode = 400;
+                //        return Json(string.Join(Environment.NewLine, $"CPF inválido do beneficiário {beneficiario.Nome}"));
+                //    }
+                //}
+
                 BoBeneficiario boBeneficiario = new BoBeneficiario();
-                
+
                 bo.Alterar(new Cliente()
                 {
                     Id = model.Id,
@@ -111,20 +124,21 @@ namespace WebAtividadeEntrevista.Controllers
 
                 foreach (var beneficiario in beneficarios)
                 {
-                    if(beneficiario.Id == null)
+                    if (beneficiario.Id == null)
                     {
                         boBeneficiario.Incluir(new Beneficiario
                         {
-                            Cpf = beneficiario.Cpf,
+                            Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
                             Nome = beneficiario.Nome,
                             IdCliente = long.Parse(beneficiario.IdCliente)
                         });
                     }
                     else
                     {
-                        boBeneficiario.Editar(new Beneficiario {
+                        boBeneficiario.Editar(new Beneficiario
+                        {
                             Id = long.Parse(beneficiario.Id),
-                            Cpf = beneficiario.Cpf,
+                            Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
                             Nome = beneficiario.Nome,
                             IdCliente = long.Parse(beneficiario.IdCliente)
                         });
@@ -133,7 +147,7 @@ namespace WebAtividadeEntrevista.Controllers
 
                 foreach (var beneficiarioItem in beneficariosExcluir)
                 {
-                    if(!string.IsNullOrEmpty(beneficiarioItem.Id))
+                    if (!string.IsNullOrEmpty(beneficiarioItem.Id))
                     {
                         boBeneficiario.Excluir(new Beneficiario
                         {
