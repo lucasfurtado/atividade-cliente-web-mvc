@@ -45,6 +45,8 @@ namespace WebAtividadeEntrevista.Controllers
             else
             {
                 List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+                if (beneficarios == null)
+                    beneficarios = new List<BeneficiarioModel>();
 
                 model.Id = bo.Incluir(new Cliente()
                 {
@@ -122,39 +124,45 @@ namespace WebAtividadeEntrevista.Controllers
                     Cpf = Regex.Replace(model.Cpf, "[^0-9]", "")
                 });
 
-                foreach (var beneficiario in beneficarios)
+                if(beneficarios != null)
                 {
-                    if (beneficiario.Id == null)
+                    foreach (var beneficiario in beneficarios)
                     {
-                        boBeneficiario.Incluir(new Beneficiario
+                        if (beneficiario.Id == null)
                         {
-                            Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
-                            Nome = beneficiario.Nome,
-                            IdCliente = long.Parse(beneficiario.IdCliente)
-                        });
-                    }
-                    else
-                    {
-                        boBeneficiario.Editar(new Beneficiario
+                            boBeneficiario.Incluir(new Beneficiario
+                            {
+                                Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
+                                Nome = beneficiario.Nome,
+                                IdCliente = long.Parse(beneficiario.IdCliente)
+                            });
+                        }
+                        else
                         {
-                            Id = long.Parse(beneficiario.Id),
-                            Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
-                            Nome = beneficiario.Nome,
-                            IdCliente = long.Parse(beneficiario.IdCliente)
-                        });
+                            boBeneficiario.Editar(new Beneficiario
+                            {
+                                Id = long.Parse(beneficiario.Id),
+                                Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
+                                Nome = beneficiario.Nome,
+                                IdCliente = long.Parse(beneficiario.IdCliente)
+                            });
+                        }
                     }
                 }
-
-                foreach (var beneficiarioItem in beneficariosExcluir)
+                
+                if(beneficariosExcluir != null)
                 {
-                    if (!string.IsNullOrEmpty(beneficiarioItem.Id))
+                    foreach (var beneficiarioItem in beneficariosExcluir)
                     {
-                        boBeneficiario.Excluir(new Beneficiario
+                        if (!string.IsNullOrEmpty(beneficiarioItem.Id))
                         {
-                            Id = long.Parse(beneficiarioItem.Id),
-                            Cpf = beneficiarioItem.Cpf,
-                            Nome = beneficiarioItem.Nome
-                        });
+                            boBeneficiario.Excluir(new Beneficiario
+                            {
+                                Id = long.Parse(beneficiarioItem.Id),
+                                Cpf = beneficiarioItem.Cpf,
+                                Nome = beneficiarioItem.Nome
+                            });
+                        }
                     }
                 }
 

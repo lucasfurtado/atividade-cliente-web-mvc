@@ -4,7 +4,6 @@
 
 
 function IncluirBeneficiario() {
-    //console.log('famoso passou aqui');
 
     let beneficiario = {
         "Cpf": document.getElementById('CPFBeneficiario').value,
@@ -34,8 +33,6 @@ function IncluirBeneficiario() {
 
 function popular() {
 
-    console.log('aqui')
-
     $.ajax({
         url: urlIncluirBeneficiario,
         method: "POST",
@@ -55,9 +52,13 @@ function popular() {
 
                 let beneficiariosJson = JSON.parse(r);
 
+                let arrayBeneficiarios = [];
+
                 for (var i = 0; i < beneficiariosJson.length; i++) {
 
                     let beneficiario = beneficiariosJson[i];
+
+                    arrayBeneficiarios.push(beneficiariosJson[i]);
 
                     var novoCampo = `
                         <div id="Beneficiario${i}" class="grid-item">
@@ -73,7 +74,7 @@ function popular() {
                             </div>
                             <div class="col-md-2">
                                 <div class="form-group">
-                                    <button id="BtnAlterarBeneficiario${i}" type="button" class="btn btn-primary form-control" onclick="editarBeneficiario('${i}','${beneficiario.Id}')">Alterar</button>
+                                    <button id="BtnAlterarBeneficiario${i}" type="button" class="btn btn-primary form-control" onclick="editarBeneficiario('${i}','${beneficiario.Id}','${beneficiario.Cpf}','${beneficiario.Nome}')">Alterar</button>
                                 </div>
                             </div>
                             <div class="col-md-2">
@@ -89,7 +90,7 @@ function popular() {
     });
 }
 
-function editarBeneficiario(index, beneficarioId) {
+function editarBeneficiario(index, beneficarioId, oldCpf, oldNome) {
 
     var botaoLabel = $(`#BtnAlterarBeneficiario${index}`).text();
 
@@ -111,13 +112,15 @@ function editarBeneficiario(index, beneficarioId) {
 
         $(`#BtnAlterarBeneficiario${index}`).removeClass("btn btn-primary btn-success").addClass("btn btn-primary").html("Alterar");
 
-        editaBeneficiario(index,beneficarioId);
+        editaBeneficiario(index, beneficarioId, oldCpf, oldNome);
     }
 }
 
-function editaBeneficiario(index,beneficarioId) {
+function editaBeneficiario(index,beneficarioId, oldCpf, oldNome) {
     let cpfEditado = document.getElementById(`CPFBeneficiario${index}`).value;
     let nomeEditado = document.getElementById(`NomeBeneficiario${index}`).value;
+
+    console.log
 
     $.ajax({
         url: editarListaBeneficiario,
@@ -130,7 +133,11 @@ function editaBeneficiario(index,beneficarioId) {
         error:
             function (r) {
 
+                var inputCPF = document.getElementById(`CPFBeneficiario${index}`);
+                inputCPF.value = oldCpf;
 
+                var inputCPF = document.getElementById(`NomeBeneficiario${index}`);
+                inputCPF.value = oldNome;
 
                 if (r.status == 400)
                     ModalDialog("Ocorreu um erro", r.responseJSON);

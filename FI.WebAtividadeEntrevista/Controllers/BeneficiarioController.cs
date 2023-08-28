@@ -30,6 +30,12 @@ namespace WebAtividadeEntrevista.Controllers
         [HttpPost]
         public JsonResult Incluir(BeneficiarioModel model)
         {
+            if(string.IsNullOrEmpty(model.Cpf) || string.IsNullOrEmpty(model.Nome))
+            {
+                Response.StatusCode = 400;
+                return Json(string.Join(Environment.NewLine, "Dados inválidos"));
+            }
+
             string cpf = Regex.Replace(model.Cpf, "[^0-9]", "");
 
             BoBeneficiario bo = new BoBeneficiario();
