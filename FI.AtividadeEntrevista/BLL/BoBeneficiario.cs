@@ -22,5 +22,17 @@ namespace FI.AtividadeEntrevista.BLL
             DaoBeneficiario cli = new DaoBeneficiario();
             return cli.ExisteRegistroComIdECPF(idCliente, cpf);
         }
+
+        public void Editar(DML.Beneficiario beneficiario)
+        {
+            DaoBeneficiario cli = new DaoBeneficiario();
+            cli.Editar(beneficiario);
+        }
+
+        public void Excluir(DML.Beneficiario beneficiario)
+        {
+            DaoBeneficiario cli = new DaoBeneficiario();
+            cli.Excluir(beneficiario);
+        }
     }
 }

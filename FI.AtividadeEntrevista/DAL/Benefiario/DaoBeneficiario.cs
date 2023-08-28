@@ -67,5 +67,25 @@ namespace FI.AtividadeEntrevista.DAL.Clientes
             else
                 return false;
         }
+
+        internal void Editar(DML.Beneficiario beneficiario)
+        {
+            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Nome", beneficiario.Nome));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Cpf", beneficiario.Cpf));
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", beneficiario.Id));
+
+            DataSet ds = base.Consultar("FI_SP_AltBenef", parametros);
+        }
+
+        internal void Excluir(DML.Beneficiario beneficiario)
+        {
+            List<System.Data.SqlClient.SqlParameter> parametros = new List<System.Data.SqlClient.SqlParameter>();
+
+            parametros.Add(new System.Data.SqlClient.SqlParameter("Id", beneficiario.Id));
+
+            DataSet ds = base.Consultar("FI_SP_ExcluirBeneficiarioId", parametros);
+        }
     }
 }

@@ -90,6 +90,7 @@ namespace WebAtividadeEntrevista.Controllers
             else
             {
                 List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+                List<BeneficiarioModel> beneficariosExcluir = Session["beneficiariosExcluir"] as List<BeneficiarioModel>;
 
                 BoBeneficiario boBeneficiario = new BoBeneficiario();
                 
@@ -117,6 +118,28 @@ namespace WebAtividadeEntrevista.Controllers
                             Cpf = beneficiario.Cpf,
                             Nome = beneficiario.Nome,
                             IdCliente = long.Parse(beneficiario.IdCliente)
+                        });
+                    }
+                    else
+                    {
+                        boBeneficiario.Editar(new Beneficiario {
+                            Id = long.Parse(beneficiario.Id),
+                            Cpf = beneficiario.Cpf,
+                            Nome = beneficiario.Nome,
+                            IdCliente = long.Parse(beneficiario.IdCliente)
+                        });
+                    }
+                }
+
+                foreach (var beneficiarioItem in beneficariosExcluir)
+                {
+                    if(!string.IsNullOrEmpty(beneficiarioItem.Id))
+                    {
+                        boBeneficiario.Excluir(new Beneficiario
+                        {
+                            Id = long.Parse(beneficiarioItem.Id),
+                            Cpf = beneficiarioItem.Cpf,
+                            Nome = beneficiarioItem.Nome
                         });
                     }
                 }

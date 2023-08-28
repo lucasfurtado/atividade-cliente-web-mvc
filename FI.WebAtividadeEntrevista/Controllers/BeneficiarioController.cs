@@ -43,9 +43,10 @@ namespace WebAtividadeEntrevista.Controllers
                 Response.StatusCode = 400;
                 return Json(string.Join(Environment.NewLine, erros));
             }
-            else { 
-            
-                if(model.IdCliente != null && bo.ExisteCPFCadastradoParfaOCliente(int.Parse(model.IdCliente), cpf))
+            else
+            {
+
+                if (model.IdCliente != null && bo.ExisteCPFCadastradoParfaOCliente(int.Parse(model.IdCliente), cpf))
                 {
                     Response.StatusCode = 400;
                     return Json(string.Join(Environment.NewLine, "CPF ja cadastrado"));
@@ -59,7 +60,7 @@ namespace WebAtividadeEntrevista.Controllers
                         beneficarios = new List<BeneficiarioModel>();
                     }
 
-                    if(beneficarios.Where(x => x.Cpf == cpf).Any())
+                    if (beneficarios.Where(x => x.Cpf == cpf).Any())
                     {
                         Response.StatusCode = 400;
                         return Json(string.Join(Environment.NewLine, "CPF ja esta na lista"));
@@ -79,7 +80,47 @@ namespace WebAtividadeEntrevista.Controllers
                     return Json("Adicionado");
                 }
             }
+        }
 
+        [HttpPost]
+        public JsonResult EditarBeneficiario(BeneficiarioModel beneficiario)
+        {
+            List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+
+            foreach (var beneficiarioItem in beneficarios)
+            {
+                if (beneficiarioItem.Id == beneficiario.Id)
+                {
+                    beneficiarioItem.Cpf = beneficiario.Cpf;
+                    beneficiarioItem.Nome = beneficiario.Nome;
+                }
+            }
+
+            return Json("Editado");
+        }
+
+        [HttpPost]
+        public JsonResult ExcluirBeneficiario(BeneficiarioModel beneficiario)
+        {
+            List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
+
+
+            List<BeneficiarioModel> beneficariosExcluir = Session["beneficiariosExcluir"] as List<BeneficiarioModel>;
+            if (beneficariosExcluir == null)
+            {
+                Session["beneficiariosExcluir"] = new List<BeneficiarioModel>();
+                beneficariosExcluir = new List<BeneficiarioModel>();
+            }
+
+            beneficariosExcluir.Add(beneficiario);
+
+            BeneficiarioModel beneficario = beneficarios.Where(x => x.Cpf == beneficiario.Cpf).FirstOrDefault();
+            beneficarios.Remove(beneficario);
+
+            Session["beneficiarios"] = beneficarios;
+            Session["beneficiariosExcluir"] = beneficariosExcluir;
+
+            return Json("Excluído");
         }
     }
 }

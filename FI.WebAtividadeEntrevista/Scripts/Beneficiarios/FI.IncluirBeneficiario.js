@@ -60,67 +60,109 @@ function popular() {
                     let beneficiario = beneficiariosJson[i];
 
                     var novoCampo = `
-                        <div id="Beneficiario${i}" class="grid-item" style="background-color: #F5F5F5;">
-                            <div class="col-md-4 mx-auto">
+                        <div id="Beneficiario${i}" class="grid-item">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <input class="form-control GridCPFBeneficiario CPF" required="required" type="text" id="CPFBeneficiario${i}" name="CPFBeneficiario${i}" placeholder="Ex.: 010.011.111-00" style="border: none; background-color: #F5F5F5; color: black; margin-top: 5px " value="${beneficiario.Cpf}" disabled>
+                                    <input required="required" type="text" class="form-control" id="CPFBeneficiario${i}" name="CPFBeneficiario${i}" value="${beneficiario.Cpf}" disabled>
                                 </div>
                             </div>
-                            <div class="col-md-4 mx-auto">
+                            <div class="col-md-4">
                                 <div class="form-group">
-                                    <input required="required" type="text" class="form-control GridNomeBeneficiario" id="NomeBeneficiario${i}" name="NomeBeneficiario${i}" placeholder="Ex.: João da Silva" maxlength="50" style="border: none; background-color: #F5F5F5; color: black;margin-top:5px" value="${beneficiario.Nome}" disabled>
+                                    <input required="required" type="text" class="form-control" id="NomeBeneficiario${i}" name="NomeBeneficiario${i}" maxlength="50" value="${beneficiario.Nome}" disabled>
                                 </div>
                             </div>
-                            <div class="col-md-2 mx-auto">
+                            <div class="col-md-2">
                                 <div class="form-group">
-                                    <button id="AlterarBeneficiario${i}" type="button" class="btn btn-sm btn-primary form-control" style="margin-top:5px" onclick="editarBeneficiario('${i}')">Alterar</button>
+                                    <button id="BtnAlterarBeneficiario${i}" type="button" class="btn btn-primary form-control" onclick="editarBeneficiario('${i}','${beneficiario.Id}')">Alterar</button>
                                 </div>
                             </div>
-                            <div class="col-md-2 mx-auto">
+                            <div class="col-md-2">
                                 <div class="form-group">
-                                    <button id="ExcluirBeneficiario${i}" type="button" class="btn btn-sm btn-danger form-control" style="margin-top:5px" onclick="ExcluirBeneficiario('${i}')">Excluir</button>
+                                    <button id="BtnExcluirBeneficiario${i}" type="button" class="btn btn-primary form-control" onclick="excluirBeneficiario('${beneficiario.Id}','${beneficiario.Cpf}','${beneficiario.Nome}')">Excluir</button>
                                 </div>
                             </div>
                         </div> `;
 
                     $('#listaBeneficiarios').append(novoCampo);
                 }
-                //ModalDialog("Sucesso","Inserido");
+            }
+    });
+}
+
+function editarBeneficiario(index, beneficarioId) {
+
+    var botaoLabel = $(`#BtnAlterarBeneficiario${index}`).text();
+
+    if (botaoLabel != "Salvar") {
+
+        let cpfBenef = document.getElementById(`CPFBeneficiario${index}`);
+        cpfBenef.disabled = false;
+        let nomeBenef = document.getElementById(`NomeBeneficiario${index}`);
+        nomeBenef.disabled = false;
+
+        $(`#BtnAlterarBeneficiario${index}`).html("Salvar");
+    }
+    else {
+
+        let cpfBenef = document.getElementById(`CPFBeneficiario${index}`);
+        cpfBenef.disabled = true;
+        let nomeBenef = document.getElementById(`NomeBeneficiario${index}`);
+        nomeBenef.disabled = true;
+
+        $(`#BtnAlterarBeneficiario${index}`).html("Alterar");
+
+        editaBeneficiario(index,beneficarioId);
+    }
+}
+
+function editaBeneficiario(index,beneficarioId) {
+    let cpfEditado = document.getElementById(`CPFBeneficiario${index}`).value;
+    let nomeEditado = document.getElementById(`NomeBeneficiario${index}`).value;
+
+    $.ajax({
+        url: editarListaBeneficiario,
+        method: "POST",
+        data: {
+            "Cpf": cpfEditado,
+            "Nome": nomeEditado,
+            "Id": beneficarioId
+        },
+        error:
+            function (r) {
+                if (r.status == 400)
+                    ModalDialog("Ocorreu um erro", r.responseJSON);
+                else if (r.status == 500)
+                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+            },
+        success:
+            function (r) {
+
+
+            }
+    });
+}
+
+function excluirBeneficiario(beneficarioId, cpfBeneficiario, nomeBeneficiario) {
+
+    $.ajax({
+        url: urlExcluirBeneficiario,
+        method: "POST",
+        data: {
+            "Id": beneficarioId,
+            "Cpf": cpfBeneficiario,
+            "Nome": nomeBeneficiario
+        },
+        error:
+            function (r) {
+                if (r.status == 400)
+                    ModalDialog("Ocorreu um erro", r.responseJSON);
+                else if (r.status == 500)
+                    ModalDialog("Ocorreu um erro", "Ocorreu um erro interno no servidor.");
+            },
+        success:
+            function (r) {
+                popular();
             }
     });
 
-    //let beneficiarios = document.getElementById('Beneficiarios').value;
-    //let beneficiariosJson = JSON.parse(beneficiarios);
-
-    //for (var i = 0; i < beneficiariosJson.length; i++) {
-
-    //    let beneficiario = beneficiariosJson[i];
-
-    //    var novoCampo = `
-    //    <div id="Beneficiario${i}" class="grid-item" style="background-color: #F5F5F5;">
-    //        <div class="col-md-4 mx-auto">
-    //            <div class="form-group">
-    //                <input class="form-control GridCPFBeneficiario CPF" required="required" type="text" id="CPFBeneficiario${i}" name="CPFBeneficiario${i}" placeholder="Ex.: 010.011.111-00" style="border: none; background-color: #F5F5F5; color: black; margin-top: 5px " value="${beneficiario.Cpf}" disabled>
-    //            </div>
-    //        </div>
-    //        <div class="col-md-4 mx-auto">
-    //            <div class="form-group">
-    //                <input required="required" type="text" class="form-control GridNomeBeneficiario" id="NomeBeneficiario${i}" name="NomeBeneficiario${i}" placeholder="Ex.: João da Silva" maxlength="50" style="border: none; background-color: #F5F5F5; color: black;margin-top:5px" value="${beneficiario.Nome}" disabled>
-    //            </div>
-    //        </div>
-    //        <div class="col-md-2 mx-auto">
-    //            <div class="form-group">
-    //                <button id="AlterarBeneficiario${i}" type="button" class="btn btn-sm btn-primary form-control" style="margin-top:5px" onclick="editarBeneficiario('${i}')">Alterar</button>
-    //            </div>
-    //        </div>
-    //        <div class="col-md-2 mx-auto">
-    //            <div class="form-group">
-    //                <button id="ExcluirBeneficiario${i}" type="button" class="btn btn-sm btn-danger form-control" style="margin-top:5px" onclick="ExcluirBeneficiario('${i}')">Excluir</button>
-    //            </div>
-    //        </div>
-    //    </div> `;
-
-    //    $('#listaBeneficiarios').append(novoCampo);
-    //}
-    
 }
