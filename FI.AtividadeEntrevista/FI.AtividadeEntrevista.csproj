@@ -78,6 +78,13 @@
     <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_IncCliente.sql" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_AltBenef.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_ExcluirBeneficiarioId.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_IncBeneficiario.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_IncClienteV2.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_PesqClienteComIdECpf.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_PesqListaBeneficiarios.sql" />
+    <EmbeddedResource Include="DAL\Clientes\Procedures\FI_SP_VerificaCPFParaCliente.sql" />
     <Content Include="DAL\Clientes\Procedures\FI_SP_VerificaCliente.sql" />
   </ItemGroup>
   <ItemGroup>
