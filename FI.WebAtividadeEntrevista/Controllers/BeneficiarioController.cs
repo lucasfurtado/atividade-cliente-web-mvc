@@ -104,14 +104,25 @@ namespace WebAtividadeEntrevista.Controllers
             {
                 List<BeneficiarioModel> beneficarios = Session["beneficiarios"] as List<BeneficiarioModel>;
 
-                foreach (var beneficiarioItem in beneficarios)
+                if(beneficiario.IdCliente != null)
                 {
-                    if (beneficiarioItem.Id == beneficiario.Id || beneficiarioItem.Cpf == beneficiario.Cpf)
+                    foreach (var beneficiarioItem in beneficarios)
                     {
-                        beneficiarioItem.Cpf = beneficiario.Cpf;
-                        beneficiarioItem.Nome = beneficiario.Nome;
+                        if (beneficiarioItem.Id == beneficiario.Id || beneficiarioItem.Cpf == beneficiario.Cpf)
+                        {
+                            beneficiarioItem.Cpf = beneficiario.Cpf;
+                            beneficiarioItem.Nome = beneficiario.Nome;
+                        }
                     }
                 }
+                else
+                {
+                    beneficarios.RemoveAt(beneficiario.Index.Value);
+
+                    beneficarios.Insert(beneficiario.Index.Value, beneficiario);
+
+                }
+
 
                 return Json("Editado");
             }

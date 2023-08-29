@@ -120,15 +120,14 @@ function editaBeneficiario(index,beneficarioId, oldCpf, oldNome) {
     let cpfEditado = document.getElementById(`CPFBeneficiario${index}`).value;
     let nomeEditado = document.getElementById(`NomeBeneficiario${index}`).value;
 
-    console.log
-
     $.ajax({
         url: editarListaBeneficiario,
         method: "POST",
         data: {
             "Cpf": cpfEditado,
             "Nome": nomeEditado,
-            "Id": beneficarioId
+            "Id": beneficarioId,
+            "Index": index
         },
         error:
             function (r) {

@@ -27,5 +27,7 @@ namespace WebAtividadeEntrevista.Models
         public string Nome { get; set; }
 
         public string IdCliente { get; set; }
+
+        public int? Index { get; set; } = null;
     }
 }
