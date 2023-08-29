@@ -144,7 +144,6 @@ namespace WebAtividadeEntrevista.Controllers
                                 Id = long.Parse(beneficiario.Id),
                                 Cpf = Regex.Replace(beneficiario.Cpf, "[^0-9]", ""),
                                 Nome = beneficiario.Nome,
-                                IdCliente = long.Parse(beneficiario.IdCliente)
                             });
                         }
                     }
@@ -154,7 +153,7 @@ namespace WebAtividadeEntrevista.Controllers
                 {
                     foreach (var beneficiarioItem in beneficariosExcluir)
                     {
-                        if (!string.IsNullOrEmpty(beneficiarioItem.Id))
+                        if (beneficiarioItem.IdCliente != null)
                         {
                             boBeneficiario.Excluir(new Beneficiario
                             {
